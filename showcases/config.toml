@@ -1,0 +1,26 @@
+# Site settings
+baseurl = "https://potential-pancake-a3f02492.pages.github.io/"
+languageCode = "en-us"
+title = "Showcase of contributions for TIBCO BusinessEvents®"
+theme = "hugrid"
+
+contentdir = "content"
+datadir = "data"
+layoutdir = "layouts"
+
+[params]
+    # Meta
+    siteAssetUrl = "/assets/"
+    title = "Showcase"
+    subtitle = "Showcase of contributions for TIBCO BusinessEvents®"
+    author = "tibcosoftware"
+    description = "Showcase of contributions for TIBCO BusinessEvents®"
+
+    # Preview container button text
+    buttontext = "Get the project"
+
+    # Footer text
+    footertext = "Made by [Codrops](http://tympanus.net/codrops/2013/03/19/thumbnail-grid-with-expanding-preview/), [Hugo](http://gohugo.io) and [aerohub](https://github.com/aerohub). Updated by [tibcosoftware](https://github.com/TIBCOSoftware)"
+
+    # add extra-css
+    # custom_css = ['css/extra1.css', 'css/extra2.css']

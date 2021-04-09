@@ -1,0 +1,9 @@
+/target/*
+/logs/*
+.idea
+.project
+.classpath
+.DS_Store
+dependency-reduced-pom.xml
+/aws-catalog-fn/src/test/resources/my-junit.properties
+/aws-catalog-fn/target/

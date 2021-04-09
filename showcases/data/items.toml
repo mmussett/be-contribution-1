@@ -1,0 +1,35 @@
+[[items]]
+name = "SQS Channel"
+type = "channel"
+description = "AWS SQS Channel."
+url = "https://github.com/tibco/be-contribution/tree/main/channel/aws-sqs"
+uploadedon = "January 1, 2021"
+author = "tibco"
+showcase = "true"
+
+[[items]]
+name = "Redis"
+type = "store"
+description = "Redis Backing Store."
+url = "https://github.com/tibco/be-contribution/tree/main/store/redis"
+uploadedon = "January 1, 2021"
+author = "tibco"
+showcase = "true"
+
+[[items]]
+name = "Elasticsearch"
+type = "metric"
+description = "Elasticsearch Metric."
+url = "https://github.com/tibco/be-contribution/tree/main/metric/elasticsearch"
+uploadedon = "January 1, 2021"
+author = "tibco"
+showcase = "true"
+
+[[items]]
+name = "AWS"
+type = "catalog"
+description = "AWS Catalog Functions."
+url = "https://github.com/tibco/be-contribution/tree/main/catalog/aws-catalog-fn"
+uploadedon = "January 1, 2021"
+author = "tibco"
+showcase = "true"

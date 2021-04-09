@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- parent pom -->
+    <parent>
+        <groupId>com.tibco.businessevents</groupId>
+        <artifactId>catalog</artifactId>
+        <version>1.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>aws-catalog-fn</artifactId>
+    <name>aws-catalog-fn</name>
+    <version>1.0.0</version>
+
+    <properties>
+        <aws.version>1.11.977</aws.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>*:cep-*</exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-files-on-build</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${be.home}/lib/ext/tpcl</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <include>${project.build.finalName}.${project.packaging}</include>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- Inheriting common dependencies -->
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-kernel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-store</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>be-functions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-backingstore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-drivers</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-tibcrypt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-tibcort</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-tibxml-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-tibxml-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-tibxml-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-ui-rt-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-emf-ecore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-emf-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-emf-ecore-xmi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>cep-external-tibcoxml-wsdl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>tpcl-antlr</artifactId>
+            <version>${be.version}</version>
+            <scope>system</scope>
+            <systemPath>${be.home}/lib/ext/tpcl/antlr-3.2.jar</systemPath>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.tibco.businessevents</groupId>-->
+<!--            <artifactId>cep-ui-rt-common</artifactId>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--        <groupId>com.tibco.businessevents</groupId>-->
+<!--        <artifactId>be-functions</artifactId>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.tibco.businessevents</groupId>
+            <artifactId>be-studiofunctions</artifactId>
+            <version>${be.version}</version>
+            <scope>system</scope>
+            <systemPath>${be.home}/lib/be-studiofunctions.jar</systemPath>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.tibco.businessevents</groupId>-->
+<!--            <artifactId>be-functions</artifactId>-->
+<!--            <version>${be.version}</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${be.home}/lib/be-functions.jar</systemPath>-->
+<!--        </dependency>-->
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>localstack</artifactId>
+            <version>1.15.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- AWS dependencies -->
+
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>${aws.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-sts -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sts</artifactId>
+            <version>${aws.version}</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-sns -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sns</artifactId>
+            <version>${aws.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-sqs -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sqs</artifactId>
+            <version>${aws.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>${aws.version}</version>
+        </dependency>
+
+        <!-- SAML dependencies -->
+
+        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.opensaml/opensaml -->
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+            <version>2.6.4</version>
+        </dependency>
+
+
+
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.64</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
+    </dependencies>
+
+</project>
