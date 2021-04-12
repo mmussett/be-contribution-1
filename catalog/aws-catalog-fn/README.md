@@ -21,57 +21,89 @@ The S3 catalog functions allow you to manipulate S3 objects and buckets through 
 
 * Delete a Bucket
   * [S3.deleteBucket](#s3deletebucket)
+  * [S3.deleteBucketWithAccessKeySecret](#s3deletebucketwithaccesskeysecret)
   * [S3.deleteBucketWithRoleARN](#s3deletebucketwithrolearn)
   * [S3.deleteBucketWithSAML](#s3deletebucketwithsaml)
 * Create a Bucket
   * [S3.createBucket](#s3createbucket)
+  * [S3.createBucketWithAccessKeySecret](#s3createbucketwithaccesskeysecret)
   * [S3.createBucketWithRoleARN](#s3createbucketwithrolearn)
   * [S3.createBucketWithSAML](#s3createbucketwithsaml)
 * Does a Bucket Exist?
   * [S3.doesBucketExist](#s3doesbucketexist)
+  * [S3.doesBucketExistWithAccessKeySecret](#s3doesbucketexistwithaccesskeysecret)
   * [S3.doesBucketExistWithRoleARN](#s3doesbucketexistwithrolearn)
   * [S3.doesBucketExistWithSAML](#s3doesbucketexistwithsaml)
 * Does an Object exist in a Bucket?
   * [S3.doesObjectExist](#s3doesobjectexist)
+  * [S3.doesObjectExistWithAccessKeySecret](#s3doesobjectexistwithaccesskeysecret)
   * [S3.doesObjectExistWithRoleARN](#s3doesobjectexistwithrolearn)
   * [S3.doesObjectExistWithSAML](#s3doesobjectexistwithsaml)
 * Delete an Object from a Bucket
   * [S3.deleteS3Object](#s3deletes3object)
+  * [S3.deleteS3ObjectWithAccessKeySecret](#s3deletes3objectwithaccesskeysecret)
   * [S3.deleteS3ObjectWithRoleARN](#s3deletes3objectwithrolearn)
   * [S3.deleteS3ObjectWithSAML](#s3deletes3objectwithsaml)
 * Put an Object in to a Bucket
   * [S3.putS3Object](#s3puts3object)
+  * [S3.putS3ObjectWithAccessKeySecret](#s3puts3objectwithaccesskeysecret)
   * [S3.putS3ObjectWithRoleARN](#s3puts3objectwithrolearn)
   * [S3.putS3ObjectWithSAML](#s3puts3objectwithsaml)
 * Put an Object in to a Bucket using SSE-S3 encryption
   * [S3.putS3ObjectUsingSSES3](#s3puts3objectusingsses3)
+  * [S3.putS3ObjectUsingSSES3WithAccessKeySecret](#s3puts3objectusingsses3withaccesskeysecret)
   * [S3.putS3ObjectUsingSSES3WithRoleARN](#s3puts3objectusingsses3withrolearn)
   * [S3.putS3ObjectUsingSSES3WithSAML](#s3puts3objectusingsses3withsaml)
 * Put an Object in to a Bucket using SSE-KMS encryption
   * [S3.putS3ObjectUsingSSEKMS](#s3puts3objectusingssekms)
+  * [S3.putS3ObjectUsingSSEKMSWithAccessKeySecret](#s3puts3objectusingssekmswithaccesskeysecret)
   * [S3.putS3ObjectUsingSSEKMSWithRoleARN](#s3puts3objectusingssekmswithrolearn)
   * [S3.putS3ObjectUsingSSEKMSWithSAML](#s3puts3objectusingssekmswithsaml)
 * Put an Object in to a Bucket using CSE-KMS encryption
   * [S3.putS3ObjectUsingCSEKMS](#s3puts3objectusingcsekms)
+  * [S3.putS3ObjectUsingCSEKMSWithAccessKeySecret](#s3puts3objectusingcsekmswithaccesskeysecret)
   * [S3.putS3ObjectUsingCSEKMSWithRoleARN](#s3puts3objectusingcsekmswithrolearn)
   * [S3.putS3ObjectUsingCSEKMSWithSAML](#s3puts3objectusingcsekmswithsaml)
 * Get an Object from a Bucket
   * [S3.getS3Object](#s3gets3object)
+  * [S3.getS3ObjectWithAccessKeySecret](#s3gets3objectwithaccesskeysecret)
   * [S3.getS3ObjectWithRoleARN](#s3gets3objectwithrolearn)
   * [S3.getS3ObjectWithSAML](#s3gets3objectwithsaml)
 * Generate a Pre-Signed URL for an Object in a Bucket
   * [S3.generatePreSignedUrl](#s3generatepresignedurl)
+  * [S3.generatePreSignedUrlWithAccessKeySecret](#s3generatepresignedurlwithaccesskeysecret)
   * [S3.generatePreSignedUrlWithRoleARN](#s3generatepresignedurlwithrolearn)
   * [S3.generatePreSignedUrlWithSAML](#s3generatepresignedurlwithsaml)
 
 # S3.deleteBucket
+
+Purpose: Delete an S3 bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+void deleteBucket(String endpoint, String bucketName, String regionName)
+```
+Args:
+
+| Arguments    | Purpose                                                                  |
+|:-------------|:-------------------------------------------------------------------------|
+| endpoint     | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName   | S3 bucket name to delete                                                 |
+| regionName   | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+N/A
+
+# S3.deleteBucketWithAccessKeySecret
 
 Purpose: Delete an S3 bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-void deleteBucket(String endpoint, String bucketName, String regionName, String awsAccessKey, String awsSecretKey)
+void deleteBucketWithAccessKeySecret(String endpoint, String bucketName, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 Args:
 
@@ -141,12 +173,37 @@ N/A
 
 ### S3.createBucket
 
+Purpose: Create an S3 bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+String createBucket(String endpoint, String bucketName, String regionName)
+```
+
+Args:
+
+| Arguments    | Purpose                                                                  |
+|:-------------|:-------------------------------------------------------------------------|
+| endpoint     | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName   | S3 bucket name to create                                                 |
+| regionName   | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type   | Description            |
+|:-------|:-----------------------|
+| String | Returns S3 Bucket name |
+
+
+### S3.createBucketWithAccessKeySecret
+
 Purpose: Create an S3 bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String createBucket(String endpoint, String bucketName, String regionName, String awsAccessKey, String awsSecretKey)
+String createBucketWithAccessKeySecret(String endpoint, String bucketName, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -164,6 +221,7 @@ Returns:
 | Type   | Description            |
 |:-------|:-----------------------|
 | String | Returns S3 Bucket name |
+
 
 
 ### S3.createBucketWithRoleARN
@@ -222,14 +280,41 @@ Returns:
 |:-------|:-----------------------|
 | String | Returns S3 Bucket name |
 
+
 ### S3.doesBucketExist
+
+Purpose: Does a S3 bucket exist using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+boolean doesBucketExist(String endpoint, String bucketName, String regionName)
+```
+
+Args:
+
+| Arguments    | Purpose                                                                  |
+|:-------------|:-------------------------------------------------------------------------|
+| endpoint     | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName   | S3 bucket name to check                                                  |
+| regionName   | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type    | Description                                   |
+|:--------|:----------------------------------------------|
+| Boolean | Returns true if the bucket exists, else false |
+
+
+
+### S3.doesBucketExistWithAccessKeySecret
 
 Purpose: Does a S3 bucket exist using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-boolean doesBucketExist(String endpoint, String bucketName, String regionName, String awsAccessKey, String awsSecretKey)
+boolean doesBucketExistWithAccessKeySecret(String endpoint, String bucketName, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -306,14 +391,42 @@ Returns:
 |:--------|:----------------------------------------------|
 | Boolean | Returns true if the bucket exists, else false |
 
+
 ### S3.doesObjectExist
+
+Purpose: Does a S3 object exist in a bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+boolean doesObjectExist(String endpoint, String bucketName, String objectName, String regionName)
+```
+
+Args:
+
+| Arguments    | Purpose                                                                  |
+|:-------------|:-------------------------------------------------------------------------|
+| endpoint     | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName   | S3 bucket name                                                           |
+| objectName   | S3 Object name to check                                                  |
+| regionName   | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type    | Description                                   |
+|:--------|:----------------------------------------------|
+| Boolean | Returns true if the object exists, else false |
+
+
+
+### S3.doesObjectExistWithAccessKeySecret
 
 Purpose: Does a S3 object exist in a bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-boolean doesObjectExist(String endpoint, String bucketName, String objectName, String regionName, String awsAccessKey, String awsSecretKey)
+boolean doesObjectExistWithAccessKeySecret(String endpoint, String bucketName, String objectName, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -332,6 +445,7 @@ Returns:
 | Type    | Description                                   |
 |:--------|:----------------------------------------------|
 | Boolean | Returns true if the object exists, else false |
+
 
 
 ### S3.doesObjectExistWithRoleARN
@@ -396,12 +510,37 @@ Returns:
 
 ### S3.deleteS3Object
 
+Purpose: Delete an S3 object in a bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+void deleteS3Object(String endpoint, String bucketName, String objectName, String regionName)
+```
+
+Args:
+
+| Arguments    | Purpose                                                                  |
+|:-------------|:-------------------------------------------------------------------------|
+| endpoint     | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName   | S3 bucket name                                                           |
+| objectName   | S3 Object name to delete                                                 |
+| regionName   | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+N/A
+
+
+
+### S3.deleteS3ObjectWithAccessKeySecret
+
 Purpose: Delete an S3 object in a bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-void deleteS3Object(String endpoint, String bucketName, String objectName, String regionName, String awsAccessKey, String awsSecretKey)
+void deleteS3ObjectWithAccessKeySecret(String endpoint, String bucketName, String objectName, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -418,6 +557,7 @@ Args:
 Returns:
 
 N/A
+
 
 ### S3.deleteS3ObjectWithRoleARN
 
@@ -478,12 +618,40 @@ N/A
 
 ### S3.putS3Object
 
+Purpose: Put an object in to S3 bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+String putS3Object(String endpoint, String bucketName, String objectName, String objectContent, String regionName)
+```
+
+Args:
+
+| Arguments      | Purpose                                                                  |
+|:---------------|:-------------------------------------------------------------------------|
+| endpoint       | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName     | S3 bucket name                                                           |
+| objectName     | S3 Object name                                                 |
+| objectContents | Object contents to put                                                   |
+| regionName     | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type   | Description                |
+|:-------|:---------------------------|
+| String | Returns the S3 object ETag |
+
+
+
+### S3.putS3ObjectWithAccessKeySecret
+
 Purpose: Put an object in to S3 bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String putS3Object(String endpoint, String bucketName, String objectName, String objectContent, String regionName, String awsAccessKey, String awsSecretKey)
+String putS3ObjectWithAccessKeySecret(String endpoint, String bucketName, String objectName, String objectContent, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -503,6 +671,7 @@ Returns:
 | Type   | Description                |
 |:-------|:---------------------------|
 | String | Returns the S3 object ETag |
+
 
 
 ### S3.putS3ObjectWithRoleARN
@@ -570,12 +739,40 @@ Returns:
 
 ### S3.putS3ObjectUsingSSES3
 
+Purpose: Put an SSE-S3 encrypted object in to S3 bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+String putS3ObjectUsingSSES3(String endpoint, String bucketName, String objectName, String objectContent, String regionName) 
+```
+
+Args:
+
+| Arguments      | Purpose                                                                  |
+|:---------------|:-------------------------------------------------------------------------|
+| endpoint       | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName     | S3 bucket name                                                           |
+| objectName     | S3 Object name                                                 |
+| objectContents | Object contents to put                                                   |
+| regionName     | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type   | Description                |
+|:-------|:---------------------------|
+| String | Returns the S3 object ETag |
+
+
+
+### S3.putS3ObjectUsingSSES3WithAccessKeySecret
+
 Purpose: Put an SSE-S3 encrypted object in to S3 bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String putS3ObjectUsingSSES3(String endpoint, String bucketName, String objectName, String objectContent, String regionName, String awsAccessKey, String awsSecretKey) 
+String putS3ObjectUsingSSES3WithAccessKeySecret(String endpoint, String bucketName, String objectName, String objectContent, String regionName, String awsAccessKey, String awsSecretKey) 
 ```
 
 Args:
@@ -595,6 +792,7 @@ Returns:
 | Type   | Description                |
 |:-------|:---------------------------|
 | String | Returns the S3 object ETag |
+
 
 
 ### S3.putS3ObjectUsingSSES3WithRoleARN
@@ -661,12 +859,41 @@ Returns:
 
 ### S3.putS3ObjectUsingSSEKMS
 
+Purpose: Put an SSE-KMS encrypted object in to S3 bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+String putS3ObjectUsingSSEKMS(String endpoint, String bucketName, String objectName, String objectContent, String kmsKeyID, String regionName)
+```
+
+Args:
+
+| Arguments      | Purpose                                                                  |
+|:---------------|:-------------------------------------------------------------------------|
+| endpoint       | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName     | S3 bucket name                                                           |
+| objectName     | S3 Object name                                                           |
+| objectContents | Object contents to put                                                   |
+| kmsKeyID       | The KMS Key ID to encrypt with                                           |
+| regionName     | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type   | Description                |
+|:-------|:---------------------------|
+| String | Returns the S3 object ETag |
+
+
+
+### S3.putS3ObjectUsingSSEKMSWithAccessKeySecret
+
 Purpose: Put an SSE-KMS encrypted object in to S3 bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String putS3ObjectUsingSSEKMS(String endpoint, String bucketName, String objectName, String objectContent, String kmsKeyID, String regionName, String awsAccessKey, String awsSecretKey)
+String putS3ObjectUsingSSEKMSWithAccessKeySecret(String endpoint, String bucketName, String objectName, String objectContent, String kmsKeyID, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -687,6 +914,7 @@ Returns:
 | Type   | Description                |
 |:-------|:---------------------------|
 | String | Returns the S3 object ETag |
+
 
 
 ### S3.putS3ObjectUsingSSEKMSWithRoleARN
@@ -756,12 +984,43 @@ Returns:
 ### S3.putS3ObjectUsingCSEKMS
 
 
+Purpose: Put an CSE-KMS encrypted object in to S3 bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+String putS3ObjectUsingCSEKMS(String endpoint, String bucketName, String objectName, String objectContent, String kmsKeyID, String regionName)
+```
+
+Args:
+
+| Arguments      | Purpose                                                                  |
+|:---------------|:-------------------------------------------------------------------------|
+| endpoint       | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName     | S3 bucket name                                                           |
+| objectName     | S3 Object name                                                           |
+| objectContents | Object contents to put                                                   |
+| kmsKeyID       | The KMS Key ID to encrypt with                                           |
+| regionName     | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type   | Description                |
+|:-------|:---------------------------|
+| String | Returns the S3 object ETag |
+
+
+
+
+### S3.putS3ObjectUsingCSEKMSWithAccessKeySecret
+
+
 Purpose: Put an CSE-KMS encrypted object in to S3 bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String putS3ObjectUsingCSEKMS(String endpoint, String bucketName, String objectName, String objectContent, String kmsKeyID, String regionName, String awsAccessKey, String awsSecretKey)
+String putS3ObjectUsingCSEKMSWithAccessKeySecret(String endpoint, String bucketName, String objectName, String objectContent, String kmsKeyID, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -782,6 +1041,7 @@ Returns:
 | Type   | Description                |
 |:-------|:---------------------------|
 | String | Returns the S3 object ETag |
+
 
 
 ### S3.putS3ObjectUsingCSEKMSWithRoleARN
@@ -852,12 +1112,39 @@ Returns:
 
 ### S3.getS3Object
 
+Purpose: Get an object from S3 bucket using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+String getS3Object(String endpoint, String bucketName, String objectName, String regionName)
+```
+
+Args:
+
+| Arguments      | Purpose                                                                  |
+|:---------------|:-------------------------------------------------------------------------|
+| endpoint       | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName     | S3 bucket name                                                           |
+| objectName     | S3 Object name                                                 |
+| regionName     | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type   | Description                   |
+|:-------|:------------------------------|
+| String | Returns the S3 object content |
+
+
+
+### S3.getS3ObjectWithAccessKeySecret
+
 Purpose: Get an object from S3 bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String getS3Object(String endpoint, String bucketName, String objectName, String regionName, String awsAccessKey, String awsSecretKey)
+String getS3ObjectWithAccessKeySecret(String endpoint, String bucketName, String objectName, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -876,6 +1163,7 @@ Returns:
 | Type   | Description                   |
 |:-------|:------------------------------|
 | String | Returns the S3 object content |
+
 
 
 ### S3.getS3ObjectWithRoleARN
@@ -942,12 +1230,40 @@ Returns:
 
 ### S3.generatePreSignedUrl
 
+Purpose: Generate pre-signed URL for an object in a S3 bucket using Default Credentail Chain mode.
+
+Function Signature:
+
+```java
+String generatePreSignedUrl(String endpoint, String bucketName, String objectName, long expTimeDuration, String regionName)
+```
+
+Args:
+
+| Arguments       | Purpose                                                                  |
+|:----------------|:-------------------------------------------------------------------------|
+| endpoint        | Override S3 Service endpoint, set to null to use the default S3 endpoint |
+| bucketName      | S3 bucket name                                                           |
+| objectName      | S3 Object name                                                           |
+| expTimeDuration | Pre-signed URL duration                                                  |
+| regionName      | AWS region e.g. "eu-west-1"                                              |
+
+Returns:
+
+| Type   | Description                     |
+|:-------|:--------------------------------|
+| String | Returns a pre-signed URL string |
+
+
+
+### S3.generatePreSignedUrlWithAccessKeySecret
+
 Purpose: Generate pre-signed URL for an object in a S3 bucket using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String generatePreSignedUrl(String endpoint, String bucketName, String objectName, long expTimeDuration, String regionName, String awsAccessKey, String awsSecretKey)
+String generatePreSignedUrlWithAccessKeySecret(String endpoint, String bucketName, String objectName, long expTimeDuration, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -967,6 +1283,7 @@ Returns:
 | Type   | Description                     |
 |:-------|:--------------------------------|
 | String | Returns a pre-signed URL string |
+
 
 
 ### S3.generatePreSignedUrlWithRoleARN
@@ -1045,7 +1362,7 @@ The SQS catalog functions allow you to interact with SQS Queues:
   * [SQS.getQueueAttributesWithRoleARN](#sqsgetqueueattributeswithrolearn)
   * [SQS.getQueueAttributesWithSAML](#sqsgetqueueattributeswithsaml)
   * [SQS.getQueueAttribute](#sqsgetqueueattribute)
-  * [SQS.getQueueAttributeWithAccessKeySecret](#sqsgetqueueattributewithaccesskeyscret)
+  * [SQS.getQueueAttributeWithAccessKeySecret](#sqsgetqueueattributewithaccesskeysecret)
   * [SQS.getQueueAttributeWithRoleARN](#sqsgetqueueattributewithrolearn)
   * [SQS.getQueueAttributeWithSAML](#sqsgetqueueattributewithsaml)
 

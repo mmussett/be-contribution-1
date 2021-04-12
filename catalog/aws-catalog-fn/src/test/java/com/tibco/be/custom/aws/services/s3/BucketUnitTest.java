@@ -1,20 +1,14 @@
 package com.tibco.be.custom.aws.services.s3;
 
-import static com.tibco.be.custom.aws.services.s3.Bucket.createBucket;
-import static com.tibco.be.custom.aws.services.s3.Bucket.deleteBucket;
-import static com.tibco.be.custom.aws.services.s3.Bucket.deleteObject;
-import static com.tibco.be.custom.aws.services.s3.Bucket.doesBucketExist;
-import static com.tibco.be.custom.aws.services.s3.Bucket.doesObjectExist;
-import static com.tibco.be.custom.aws.services.s3.Bucket.generatePreSignedUrl;
-import static com.tibco.be.custom.aws.services.s3.Bucket.getObject;
-import static com.tibco.be.custom.aws.services.s3.Bucket.putObject;
-import static com.tibco.be.custom.aws.services.s3.Bucket.putObjectWithSSE_S3;
+import static com.tibco.be.custom.aws.services.s3.Bucket.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -53,8 +47,7 @@ public class BucketUnitTest {
   }
 
 
-  private static AmazonS3 amazonS3;
-
+  private static AmazonS3 client;
 
   // Test for KMS & CSE
   static String kmsKeyID;
@@ -68,14 +61,15 @@ public class BucketUnitTest {
 
       kmsKeyID = UUID.randomUUID().toString();
 
-      BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(localStackContainer.getAccessKey(), localStackContainer.getSecretKey());
+      //BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(localStackContainer.getAccessKey(), localStackContainer.getSecretKey());
 
       EndpointConfiguration endpointConfiguration = localStackContainer
           .getEndpointConfiguration(Service.SQS);
 
-      amazonS3 = AmazonS3ClientBuilder
+      client = AmazonS3ClientBuilder
         .standard()
-        .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
+        //.withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
+          .withCredentials(new DefaultAWSCredentialsProviderChain())
         .withEndpointConfiguration(endpointConfiguration)
         .build();
 
@@ -100,17 +94,17 @@ public class BucketUnitTest {
     String bucketName = generateAlphaNumericRandomString(60);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     boolean exists =
-        doesBucketExist(amazonS3, bucketName);
+        doesBucketExist(client, bucketName);
     assertTrue(exists);
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -123,14 +117,14 @@ public class BucketUnitTest {
     String bucketName = generateAlphaNumericRandomString(60);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
       boolean exists =
-          doesBucketExist(amazonS3, bucketName);
+          doesBucketExist(client, bucketName);
 
       assertTrue(exists);
     } catch (RuntimeException e) {
@@ -138,7 +132,7 @@ public class BucketUnitTest {
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -151,20 +145,20 @@ public class BucketUnitTest {
     String bucketName = generateAlphaNumericRandomString(60);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
       boolean exists =
-          doesBucketExist(amazonS3, bucketName);
+          doesBucketExist(client, bucketName);
 
       assertFalse(exists);
     } catch (RuntimeException e) {
@@ -180,7 +174,7 @@ public class BucketUnitTest {
     String objectContent = generateAlphaNumericRandomString(1024);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -188,7 +182,7 @@ public class BucketUnitTest {
     try {
       String result =
           putObject(
-              amazonS3,
+              client,
               bucketName,
               objectName,
               objectContent);
@@ -203,7 +197,7 @@ public class BucketUnitTest {
     try {
       String content =
           getObject(
-              amazonS3, bucketName, objectName);
+              client, bucketName, objectName);
 
       assertEquals(content, objectContent);
     } catch (RuntimeException e) {
@@ -212,13 +206,13 @@ public class BucketUnitTest {
 
     try {
       deleteObject(
-          amazonS3, bucketName, objectName);
+          client, bucketName, objectName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -233,14 +227,14 @@ public class BucketUnitTest {
     String objectContent = generateAlphaNumericRandomString(1024);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
           putObject(
-              amazonS3,
+              client,
               bucketName,
               objectName,
               objectContent);
@@ -250,14 +244,14 @@ public class BucketUnitTest {
 
     try {
       deleteObject(
-          amazonS3, bucketName, objectName);
+          client, bucketName, objectName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
           getObject(
-              amazonS3, bucketName, objectName);
+              client, bucketName, objectName);
 
       fail("Object should have been deleted");
 
@@ -265,7 +259,7 @@ public class BucketUnitTest {
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -277,14 +271,14 @@ public class BucketUnitTest {
     String bucketName = generateAlphaNumericRandomString(60);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
       boolean exists =
-          doesBucketExist(amazonS3, bucketName);
+          doesBucketExist(client, bucketName);
 
       assertTrue(exists);
     } catch (RuntimeException e) {
@@ -292,7 +286,7 @@ public class BucketUnitTest {
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -306,7 +300,7 @@ public class BucketUnitTest {
     String objectContent = generateAlphaNumericRandomString(1024);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -314,7 +308,7 @@ public class BucketUnitTest {
     try {
       String result =
           putObject(
-              amazonS3,
+              client,
               bucketName,
               objectName,
               objectContent);
@@ -329,7 +323,7 @@ public class BucketUnitTest {
     try {
       boolean exists =
           doesObjectExist(
-              amazonS3, bucketName, objectName);
+              client, bucketName, objectName);
 
       assertTrue(exists);
     } catch (RuntimeException e) {
@@ -338,13 +332,13 @@ public class BucketUnitTest {
 
     try {
       deleteObject(
-          amazonS3, bucketName, objectName );
+          client, bucketName, objectName );
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -358,14 +352,14 @@ public class BucketUnitTest {
     String objectContent = generateAlphaNumericRandomString(1024);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
           putObject(
-              amazonS3,
+              client,
               bucketName,
               objectName,
               objectContent);
@@ -378,7 +372,7 @@ public class BucketUnitTest {
     try {
       String content =
           getObject(
-              amazonS3, bucketName, objectName);
+              client, bucketName, objectName);
 
       assertEquals(content, objectContent);
 
@@ -388,13 +382,13 @@ public class BucketUnitTest {
 
     try {
       deleteObject(
-          amazonS3, bucketName, objectName);
+          client, bucketName, objectName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -516,7 +510,7 @@ public class BucketUnitTest {
     String objectContent = generateAlphaNumericRandomString(1024);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -524,7 +518,7 @@ public class BucketUnitTest {
     try {
       String result =
           putObjectWithSSE_S3(
-              amazonS3,
+              client,
               bucketName,
               objectName,
               objectContent);
@@ -541,7 +535,7 @@ public class BucketUnitTest {
     try {
       boolean exists =
           doesObjectExist(
-              amazonS3, bucketName, objectName );
+              client, bucketName, objectName );
 
       assertTrue(exists);
     } catch (RuntimeException e) {
@@ -550,13 +544,13 @@ public class BucketUnitTest {
 
     try {
       deleteObject(
-          amazonS3, bucketName, objectName );
+          client, bucketName, objectName );
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -570,7 +564,7 @@ public class BucketUnitTest {
     String objectContent = generateAlphaNumericRandomString(1024);
 
     try {
-      createBucket(amazonS3, bucketName);
+      createBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
@@ -578,7 +572,7 @@ public class BucketUnitTest {
     try {
       String result =
           putObject(
-              amazonS3,
+              client,
               bucketName,
               objectName,
               objectContent);
@@ -593,7 +587,7 @@ public class BucketUnitTest {
     try {
       String result =
           generatePreSignedUrl(
-              amazonS3,
+              client,
               bucketName,
               objectName, null, 6000);
 
@@ -606,13 +600,13 @@ public class BucketUnitTest {
 
     try {
       deleteObject(
-          amazonS3, bucketName, objectName);
+          client, bucketName, objectName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
 
     try {
-      deleteBucket(amazonS3, bucketName);
+      deleteBucket(client, bucketName);
     } catch (RuntimeException e) {
       fail(e.getMessage());
     }
