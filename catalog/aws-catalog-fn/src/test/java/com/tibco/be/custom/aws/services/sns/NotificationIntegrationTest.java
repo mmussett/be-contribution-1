@@ -86,39 +86,55 @@ class NotificationIntegrationTest {
     }
   }
 
-    @Test
-    void testPublishNotification() {
+  @Test
+  void testPublishNotification() {
 
-       String result =  publishNotification(endpoint,topicARNBasic, message, subject, regionName,
-           awsAccessKeyBasic, awsSecretKeyBasic);
-       Assert.assertNotNull(result);
-       Assert.assertFalse(result.length()==0);
-    }
+    String result =  publishNotification(endpoint,topicARNBasic, message, subject, regionName);
+    Assert.assertNotNull(result);
+    Assert.assertFalse(result.length()==0);
+  }
 
-    @Test
-    void testPublishNotificationWithRoleARN() {
+  @Test
+  void testPublishNotificationWithAccessKeySecret() {
 
-      String result = publishNotificationWithRoleARN(endpoint,topicARNAssumeRole,  message,  subject,  regionName,
-          roleARNAssumeRole, roleSessionNameAssumeRole,
-          durationAssumeRole, awsAccessKeyAssumeRole, awsSecretKeyAssumeRole);
-      Assert.assertNotNull(result);
-      Assert.assertFalse(result.length()==0);
-    }
+     String result =  publishNotificationWithAccessKeySecret(endpoint,topicARNBasic, message, subject, regionName,
+         awsAccessKeyBasic, awsSecretKeyBasic);
+     Assert.assertNotNull(result);
+     Assert.assertFalse(result.length()==0);
+  }
 
-    @Test
-    void testPublishNotificationWithSAML() {
+  @Test
+  void testPublishNotificationWithRoleARN() {
 
-      String result = publishNotificationWithSAML(endpoint,topicSAML, message, subject, regionName,
-          idpNameSAML, idpEntryUrlSAML,
-          idpUsernameSAML, idpPasswordSAML, awsRoleSAML, durationSAML);
-      Assert.assertNotNull(result);
-      Assert.assertFalse(result.length()==0);
-    }
+    String result = publishNotificationWithRoleARN(endpoint,topicARNAssumeRole,  message,  subject,  regionName,
+        roleARNAssumeRole, roleSessionNameAssumeRole,
+        durationAssumeRole, awsAccessKeyAssumeRole, awsSecretKeyAssumeRole);
+    Assert.assertNotNull(result);
+    Assert.assertFalse(result.length()==0);
+  }
+
+  @Test
+  void testPublishNotificationWithSAML() {
+
+    String result = publishNotificationWithSAML(endpoint,topicSAML, message, subject, regionName,
+        idpNameSAML, idpEntryUrlSAML,
+        idpUsernameSAML, idpPasswordSAML, awsRoleSAML, durationSAML);
+    Assert.assertNotNull(result);
+    Assert.assertFalse(result.length()==0);
+  }
 
   @Test
   void testPublishNotificationSMS() {
 
-    String result =  publishNotificationSMS(endpoint,topicARNBasic, message, smsSenderID,smsOriginationNumber,smsMaxPrice,smsType,  regionName,
+    String result =  publishNotificationSMS(endpoint,topicARNBasic, message, smsSenderID,smsOriginationNumber,smsMaxPrice,smsType,  regionName);
+    Assert.assertNotNull(result);
+    Assert.assertFalse(result.length()==0);
+  }
+
+  @Test
+  void testPublishNotificationSMSWithAccessKeySecret() {
+
+    String result =  publishNotificationSMSWithAccessKeySecret(endpoint,topicARNBasic, message, smsSenderID,smsOriginationNumber,smsMaxPrice,smsType,  regionName,
         awsAccessKeyBasic, awsSecretKeyBasic);
     Assert.assertNotNull(result);
     Assert.assertFalse(result.length()==0);

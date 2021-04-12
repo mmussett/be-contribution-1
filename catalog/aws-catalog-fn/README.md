@@ -1288,21 +1288,50 @@ The SNS catalog functions allow you to send text or SMS messages to a pre-define
 
 * Publish Notification to SNS Topic
   * [SNS.publishNotification](#snspublishnotification)
+  * [SNS.publishNotificationWithAccessKeySecret](#snspublishnotificationwithaccesskeysecret)
   * [SNS.publishNotificationWithRoleARN](#snspublishnotificationwithrolearn)
   * [SNS.publishNotificationWithSAML](#snspublishnotificationwithsaml)
 * Publish SMS Message to SNS Topic
   * [SNS.publishNotificationSMS](#snspublishnotificationsms)
+  * [SNS.publishNotificationSMS](#snspublishnotificationsmswithaccesskeysecret)
   * [SNS.publishNotificationSMSWithRoleARN](#snspublishnotificationsmswithrolearn)
   * [SNS.publishNotificationSMSWithSAML](#snspublishnotificationsmswithsaml)
 
 ### SNS.publishNotification
+
+Purpose: Publish a message to SNS Topic using Default Credential Chain mode.
+
+Function Signature:
+
+```java
+String publishNotification(String endpoint, String topicARN, String message, String subject, String regionName)
+```
+
+Args:
+
+| Arguments    | Purpose                                                                    |
+|:-------------|:---------------------------------------------------------------------------|
+| endpoint     | Override SNS Service endpoint, set to null to use the default SNS endpoint |
+| topicARN     | SNS Topic ARN                                                              |
+| message      | Notification message to publish                                            |
+| subject      | Notification subject to publish                                            |
+| regionName   | AWS region e.g. "eu-west-1"                                                |
+
+Returns:
+
+| Type   | Description                                              |
+|:-------|:---------------------------------------------------------|
+| String | Returns value of SNS Message ID of the published message |
+
+
+### SNS.publishNotificationWithAccessKeySecret
 
 Purpose: Publish a message to SNS Topic using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String publishNotification(String endpoint, String topicARN, String message, String subject, String regionName, String awsAccessKey, String awsSecretKey)
+String publishNotificationWithAccessKeySecret(String endpoint, String topicARN, String message, String subject, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -1322,7 +1351,6 @@ Returns:
 | Type   | Description                                              |
 |:-------|:---------------------------------------------------------|
 | String | Returns value of SNS Message ID of the published message |
-
 
 
 ### SNS.publishNotificationWithRoleARN
@@ -1394,12 +1422,45 @@ Returns:
 ### SNS.publishNotificationSMS
 
 
+Purpose: Publish a SMS message to SNS Topic using Default Credential mode.
+
+Function Signature:
+
+```java
+String publishNotificationSMS(String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName)
+```
+
+Args:
+
+| Arguments            | Purpose                                                                    |
+|:---------------------|:---------------------------------------------------------------------------|
+| endpoint             | Override SNS Service endpoint, set to null to use the default SNS endpoint |
+| topicARN             | SNS Topic ARN                                                              |
+| message              | SMS Message to send                                             |
+| smsSenderID          | SMS Sender ID (see AWS docs on sending SMS messages using SNS)                                            |
+| smsOriginationNumber | SMS Origination Number (see AWS docs on sending SMS messages using SNS)                                                                             |
+| smsMaxPrice          | Maximum Price for SMS message (see AWS docs on sending SMS messages using SNS)                                                                           |
+| smsType              | SMS Type (see AWS docs on sending SMS messages using SNS)                                                                           |
+| regionName           | AWS region e.g. "eu-west-1"                                                |
+
+
+Returns:
+
+| Type   | Description                                              |
+|:-------|:---------------------------------------------------------|
+| String | Returns value of SNS Message ID of the published message |
+
+
+
+### SNS.publishNotificationSMSWithAccessKeySecret
+
+
 Purpose: Publish a SMS message to SNS Topic using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String publishNotificationSMS(String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName, String awsAccessKey, String awsSecretKey)
+String publishNotificationSMSWithAccessKeySecret(String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:

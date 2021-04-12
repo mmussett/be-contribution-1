@@ -1,6 +1,6 @@
 package com.tibco.be.custom.aws.services.sns;
 
-import static com.tibco.be.custom.aws.services.sns.Notification.createSMSAttributes;
+import static com.tibco.be.custom.aws.services.sns.Notification.*;
 import static com.tibco.be.custom.aws.services.sns.Notification.publish;
 
 import static com.tibco.be.custom.aws.services.sns.Notification.publishWithAttributes;

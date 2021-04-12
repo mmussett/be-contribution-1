@@ -3,6 +3,7 @@ package com.tibco.be.custom.aws.services.sns;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.BasicSessionCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.securitytoken.model.Credentials;
 import com.amazonaws.services.sns.AmazonSNS;
@@ -36,10 +37,42 @@ import static com.tibco.be.model.functions.FunctionDomain.BUI;
         synopsis = "AWS SNS Functions") //Add a synopsis here
 public class Notification {
 
+    @BEFunction(
+        name = "publishNotification",
+        signature = "String publishNotification (String endpoint, String topicARN, String message, String regionName)",
+        params = {
+            @FunctionParamDescriptor(name = "endpoint", type = "String", desc = "AWS SNS Service endpoint, set to null to use default SNS Service address" /*Override default AWS SNS Service endpoint*/),
+            @FunctionParamDescriptor(name = "topicARN", type = "String", desc = "SNS Topic ARN" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "message", type = "String", desc = "Message" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "regionName", type = "String", desc = "AWS Region" /*Add Description here*/),
+        },
+        freturn = @FunctionParamDescriptor(name = "", type = "String", desc = "" /*Add Description here*/),
+        version = "1.0", /*Add Version here*/
+        see = "",
+        mapper = @BEMapper(),
+        description = "Publish message to SNS Topic using Default Credential Chain" /*Add Description here*/,
+        cautions = "none",
+        fndomain = {ACTION, BUI},
+        example = "String result = SNS.publishNotification(null, \"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
+    )
+    public static String publishNotification(String endpoint, String topicARN, String message, String subject, String regionName) throws RuntimeException {
+
+        try {
+            AmazonSNS client = createAmazonSNSClient(endpoint, regionName);
+            String result = publish(client, topicARN, message, subject);
+            client.shutdown();
+            return result;
+
+        } catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
 
     @BEFunction(
-            name = "publishNotification",
-            signature = "String publishNotification (String endpoint, String topicARN, String message, String regionName, String awsAccessKey, String awsSecretKey)",
+            name = "publishNotificationWithAccessKeySecret",
+            signature = "String publishNotificationWithAccessKeySecret(String endpoint, String topicARN, String message, String regionName, String awsAccessKey, String awsSecretKey)",
             params = {
                 @FunctionParamDescriptor(name = "endpoint", type = "String", desc = "AWS SNS Service endpoint, set to null to use default SNS Service address" /*Override default AWS SNS Service endpoint*/),
                 @FunctionParamDescriptor(name = "topicARN", type = "String", desc = "SNS Topic ARN" /*Add Description here*/),
@@ -55,9 +88,9 @@ public class Notification {
             description = "Publish message to SNS Topic using Access and Secret Key" /*Add Description here*/,
             cautions = "none",
             fndomain = {ACTION, BUI},
-            example = "String result = SNS.publishNotification(null, \"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
+            example = "String result = SNS.publishNotificationWithAccessKeySecret(null, \"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
     )
-    public static String publishNotification(String endpoint, String topicARN, String message, String subject, String regionName, String awsAccessKey, String awsSecretKey) throws RuntimeException {
+    public static String publishNotificationWithAccessKeySecret(String endpoint, String topicARN, String message, String subject, String regionName, String awsAccessKey, String awsSecretKey) throws RuntimeException {
 
         try {
             AmazonSNS client = createAmazonSNSClient(endpoint, regionName, awsAccessKey, awsSecretKey);
@@ -145,9 +178,47 @@ public class Notification {
         }
     }
 
+
     @BEFunction(
         name = "publishNotificationSMS",
-        signature = "String result = publishNotificationSMS (String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName, String awsAccessKey, String awsSecretKey)",
+        signature = "String result = publishNotificationSMS (String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName)",
+        params = {
+            @FunctionParamDescriptor(name = "endpoint", type = "String", desc = "AWS SNS Service endpoint, set to null to use default SNS Service address" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "topicARN", type = "String", desc = "SNS Topic ARN" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "message", type = "String", desc = "Message" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "smsSenderID", type = "String", desc = "SMS Sender ID" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "smsOriginationNumber", type = "String", desc = "SMS Origination Number" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "smsMaxPrice", type = "String", desc = "SMS Maximum Price" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "smsType", type = "String", desc = "SMS Type (Promotional or Transactional)" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "regionName", type = "String", desc = "AWS Region" /*Add Description here*/),
+        },
+        freturn = @FunctionParamDescriptor(name = "", type = "String", desc = "" /*Add Description here*/),
+        version = "1.0", /*Add Version here*/
+        see = "",
+        mapper = @BEMapper(),
+        description = "Publish SMS via SNS Notification using Default Credential Chain" /*Add Description here*/,
+        cautions = "none",
+        fndomain = {ACTION, BUI},
+        example = "String result = SNS.publishNotificationSMS(null, \"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
+    )
+    public static String publishNotificationSMS(String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName) throws RuntimeException {
+
+        try {
+            AmazonSNS client = createAmazonSNSClient(endpoint, regionName);
+            Map<String, MessageAttributeValue> smsAttributes = createSMSAttributes(smsSenderID, smsOriginationNumber, smsMaxPrice, smsType);
+            String result =  publishWithAttributes(client, topicARN, message, smsAttributes);
+            client.shutdown();
+            return result;
+        } catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
+
+    @BEFunction(
+        name = "publishNotificationSMSWithAccessKeySecret",
+        signature = "String result = publishNotificationSMSWithAccessKeySecret(String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName, String awsAccessKey, String awsSecretKey)",
         params = {
             @FunctionParamDescriptor(name = "endpoint", type = "String", desc = "AWS SNS Service endpoint, set to null to use default SNS Service address" /*Add Description here*/),
             @FunctionParamDescriptor(name = "topicARN", type = "String", desc = "SNS Topic ARN" /*Add Description here*/),
@@ -167,9 +238,9 @@ public class Notification {
         description = "Publish SMS via SNS Notification using Access and Secret Key" /*Add Description here*/,
         cautions = "none",
         fndomain = {ACTION, BUI},
-        example = "String result = SNS.publishNotificationSMS(null, \"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
+        example = "String result = SNS.publishNotificationSMSWithAccessKeySecret(null, \"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
     )
-    public static String publishNotificationSMS(String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName, String awsAccessKey, String awsSecretKey) throws RuntimeException {
+    public static String publishNotificationSMSWithAccessKeySecret(String endpoint, String topicARN, String message, String smsSenderID, String smsOriginationNumber, String smsMaxPrice, String smsType, String regionName, String awsAccessKey, String awsSecretKey) throws RuntimeException {
 
         try {
             AmazonSNS client = createAmazonSNSClient(endpoint, regionName, awsAccessKey, awsSecretKey);
@@ -330,6 +401,32 @@ public class Notification {
               .build();
 
       return client;
+        }
+    }
+
+
+    public static AmazonSNS createAmazonSNSClient(String endpoint, String regionName) throws Exception {
+
+        if (endpoint != null && endpoint.length() != 0) {
+            AwsClientBuilder.EndpointConfiguration config =
+                new AwsClientBuilder.EndpointConfiguration(endpoint, regionName);
+
+            AmazonSNS client = AmazonSNSClientBuilder
+                .standard()
+                .withEndpointConfiguration(config)
+                .withCredentials(new DefaultAWSCredentialsProviderChain())
+                .build();
+
+            return client;
+
+        } else {
+            AmazonSNS client = AmazonSNSClientBuilder
+                .standard()
+                .withCredentials(new DefaultAWSCredentialsProviderChain())
+                .withRegion(regionName)
+                .build();
+
+            return client;
         }
     }
 
