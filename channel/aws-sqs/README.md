@@ -24,7 +24,7 @@ Note - For integration tests, we use an embedded localstack instance that mocks/
 | Field | Auth Type Use | Global Var? | Description |
 |---|---|---|---|
 AWS Region|Both|No|AWS Region where SQS resides. For example <b>eu-west-1</b>
-Authentication Type|N/A|No|Toggle between AWS Credentials or SAML authentication modes 
+Authentication Type|N/A|No|Toggle between Default Credential Chain, AWS Credentials or SAML authentication modes
 Credential AWS SQS Access Key|Credential|Yes|Key used in combination with the AWS SQS Secret Key to make programmatic request to AWS. The access key is similar to a user name used in a username-password pair.
 Credential AWS SQS Secret Key|Credential|Yes|Key used in combination with the access key to make programmatic requests to AWS. The access key is similar to the user name used in a user name-password pair.
 Credential Role ARN|Credential|Yes|The AWS Role ARN used to access SQS. For example, <b>arn:aws:iam::396113037621:role/TIBCO/BE</b>
