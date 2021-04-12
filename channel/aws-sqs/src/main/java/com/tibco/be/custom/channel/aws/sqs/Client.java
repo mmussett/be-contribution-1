@@ -140,19 +140,25 @@ public class Client {
       }
     } else if (context instanceof DefaultContext) {
 
-      DefaultContext defaultContext = (DefaultContext) context;
+      if (client == null) {
+        DefaultContext defaultContext = (DefaultContext) context;
 
-      // Create our AWS endpoint configuration
-      AwsClientBuilder.EndpointConfiguration endpointConfiguration =
-          new AwsClientBuilder.EndpointConfiguration(
-              defaultContext.getQueueUrl(), defaultContext.getRegionName());
+        // Create our AWS endpoint configuration
+        AwsClientBuilder.EndpointConfiguration endpointConfiguration =
+            new AwsClientBuilder.EndpointConfiguration(
+                defaultContext.getQueueUrl(), defaultContext.getRegionName());
 
-      client = AmazonSQSClientBuilder.standard()
-          .withCredentials(new DefaultAWSCredentialsProviderChain())
-          .withEndpointConfiguration(endpointConfiguration)
-          .build();
+        client = AmazonSQSClientBuilder.standard()
+            .withCredentials(new DefaultAWSCredentialsProviderChain())
+            .withEndpointConfiguration(endpointConfiguration)
+            .build();
 
-      return client;
+        return client;
+      } else {
+        // We're here if we already have a client instance that can be returned.
+        logger.log(Level.DEBUG,"Re-using AmazonSQS client");
+        return client;
+      }
     } else {
       throw new RuntimeException("Unknown context");
     }
