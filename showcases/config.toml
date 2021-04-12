@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "https://potential-pancake-a3f02492.pages.github.io/"
+baseurl = "https://tibcosoftware.github.io/be-contribution/"
 languageCode = "en-us"
 title = "Showcase of contributions for TIBCO BusinessEvents®"
 theme = "hugrid"
