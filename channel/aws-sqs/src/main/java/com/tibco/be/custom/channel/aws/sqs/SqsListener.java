@@ -13,6 +13,7 @@ import com.tibco.be.custom.channel.BaseEventSerializer;
 import com.tibco.be.custom.channel.Event;
 import com.tibco.be.custom.channel.EventProcessor;
 import com.tibco.be.custom.channel.aws.sqs.basiccredentials.BasicContext;
+import com.tibco.be.custom.channel.aws.sqs.defaultcredentials.DefaultContext;
 import com.tibco.be.custom.channel.aws.sqs.saml2.SAMLContext;
 import com.tibco.cep.kernel.service.logging.Level;
 import com.tibco.cep.kernel.service.logging.Logger;
@@ -64,10 +65,17 @@ public class SqsListener implements Runnable {
         if (context instanceof BasicContext) {
             logger.log(Level.DEBUG,"Using Basic Context");
             queueUrl = ((BasicContext)context).getQueueUrl();
-        } else {
+        } else if (context instanceof SAMLContext)  {
             logger.log(Level.DEBUG,"Using SAML Context");
             queueUrl = ((SAMLContext)context).getQueueUrl();
+        } else if (context instanceof DefaultContext) {
+            logger.log(Level.DEBUG,"Using Default Context");
+            queueUrl = ((DefaultContext)context).getQueueUrl();
+        } else {
+            throw new RuntimeException("Unknown context");
         }
+
+
 
         ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest()
                 .withQueueUrl(queueUrl)

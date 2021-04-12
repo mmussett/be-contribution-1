@@ -11,6 +11,7 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 
 import com.tibco.be.custom.channel.*;
 import com.tibco.be.custom.channel.aws.sqs.basiccredentials.BasicContext;
+import com.tibco.be.custom.channel.aws.sqs.defaultcredentials.DefaultContext;
 import com.tibco.be.custom.channel.aws.sqs.saml2.SAMLContext;
 import com.tibco.cep.kernel.service.logging.Level;
 
@@ -91,7 +92,7 @@ public class SqsDestination extends BaseDestination {
                 .setTokenExpirationDuration(Integer.parseInt(getChannel().getChannelProperties().getProperty(CONFIG_AWS_SQS_CREDENTIALS_EXPIRATION)) * 60)
                 .setQueueUrl(getDestinationProperties().getProperty(CONFIG_QUEUE_URL))
                 .build();
-        } else {
+        } else if(authType.equals("SAML")){
             context = new SAMLContext.SAMLContextBuilder()
                 .setIdpUsername(getChannel().getChannelProperties().getProperty(CONFIG_AWS_SQS_SAML_IDP_USERNAME))
                 .setIdpPassword(getChannel().getChannelProperties().getProperty(CONFIG_AWS_SQS_SAML_IDP_PASSWORD))
@@ -104,6 +105,13 @@ public class SqsDestination extends BaseDestination {
                 .setTokenExpirationDuration(Integer.parseInt(getChannel().getChannelProperties().getProperty(CONFIG_AWS_SQS_SAML_TOKEN_EXPIRY_DURATION)))
                 .setQueueUrl(getDestinationProperties().getProperty(CONFIG_QUEUE_URL))
                 .build();
+        } else if(authType.equals("DEFAULT")) {
+            context = new DefaultContext.DefaultContextBuilder()
+                .setRegionName(getChannel().getChannelProperties().getProperty(CONFIG_AWS_REGION))
+                .setQueueUrl(getDestinationProperties().getProperty(CONFIG_QUEUE_URL))
+                .build();
+        } else {
+            throw new RuntimeException("Invalid authType");
         }
 
         executor = ((SqsChannel) getChannel()).getJobPool();

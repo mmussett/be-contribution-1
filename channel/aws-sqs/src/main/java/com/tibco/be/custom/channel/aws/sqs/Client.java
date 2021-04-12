@@ -8,6 +8,7 @@ package com.tibco.be.custom.channel.aws.sqs;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.securitytoken.model.Credentials;
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -16,6 +17,7 @@ import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.tibco.be.custom.channel.aws.sqs.basiccredentials.BasicContext;
 import com.tibco.be.custom.channel.aws.sqs.basiccredentials.BasicCredential;
 import com.tibco.be.custom.channel.aws.sqs.basiccredentials.BasicCredentialsManager;
+import com.tibco.be.custom.channel.aws.sqs.defaultcredentials.DefaultContext;
 import com.tibco.be.custom.channel.aws.sqs.saml2.SAMLContext;
 import com.tibco.be.custom.channel.aws.sqs.saml2.SAMLCredentialsManager;
 
@@ -74,7 +76,6 @@ public class Client {
                       new AWSStaticCredentialsProvider(credentials.getBasicSessionCredentials()))
                   .withEndpointConfiguration(endpointConfiguration)
                   .build();
-          return client;
         } else {
 
           // Creating an AmazonSQS client is a time-expensive operation - we only want to do it when we have to!
@@ -87,15 +88,15 @@ public class Client {
                       new AWSStaticCredentialsProvider(credentials.getBasicAWSCredentials()))
                   .withEndpointConfiguration(endpointConfiguration)
                   .build();
-          return client;
         }
+        return client;
       } else {
         // We're here if we already have an non-expired set of credentials and therefore our existing client instance can be returned.
         logger.log(Level.DEBUG,"AmazonSQS client token is not stale, re-using client connection");
         return client;
       }
 
-    } else {
+    } else if (context instanceof SAMLContext) {
 
       // We're using a SAML context for authentication
 
@@ -137,7 +138,25 @@ public class Client {
         logger.log(Level.DEBUG,"AmazonSQS client token is not stale, re-using client connection");
         return client;
       }
+    } else if (context instanceof DefaultContext) {
+
+      DefaultContext defaultContext = (DefaultContext) context;
+
+      // Create our AWS endpoint configuration
+      AwsClientBuilder.EndpointConfiguration endpointConfiguration =
+          new AwsClientBuilder.EndpointConfiguration(
+              defaultContext.getQueueUrl(), defaultContext.getRegionName());
+
+      client = AmazonSQSClientBuilder.standard()
+          .withCredentials(new DefaultAWSCredentialsProviderChain())
+          .withEndpointConfiguration(endpointConfiguration)
+          .build();
+
+      return client;
+    } else {
+      throw new RuntimeException("Unknown context");
     }
+
 
   }
 

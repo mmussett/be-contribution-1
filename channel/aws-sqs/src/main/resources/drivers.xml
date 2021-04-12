@@ -45,7 +45,8 @@
                 <parent></parent>
                 <type>combo-box</type>
                 <choices default="CREDENTIALS">
-                    <choice displayed="AWS Credentials" value="CREDENTIALS"/>
+                  <choice displayed="AWS Default Credential Chain" value="DEFAULT"/>
+                  <choice displayed="AWS Credentials" value="CREDENTIALS"/>
                     <choice displayed="SAML" value="SAML"/>
                 </choices>
             </property>
