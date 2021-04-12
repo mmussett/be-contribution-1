@@ -7,6 +7,7 @@ import static com.tibco.be.model.functions.FunctionDomain.BUI;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.BasicSessionCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.securitytoken.model.Credentials;
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -30,8 +31,39 @@ public class Queue {
 
 
     @BEFunction(
-            name = "getQueueAttributes",
-            signature = "Object getQueueAttributes(String endpoint, String queueName, String regionName, String awsAccessKey, String awsSecretKey)",
+        name = "getQueueAttributes",
+        signature = "Object getQueueAttributes(String endpoint, String queueName, String regionName, String awsAccessKey, String awsSecretKey)",
+        params = {
+            @FunctionParamDescriptor(name = "endpoint", type = "String", desc = "AWS SQS Service endpoint, set to null to use default SQS Service address" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "queueURL", type = "String", desc = "SQS Queue URL" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "regionName", type = "String", desc = "AWS Region" /*Add Description here*/),
+
+        },
+        freturn = @FunctionParamDescriptor(name = "", type = "String", desc = "" /*Add Description here*/),
+        version = "1.0", /*Add Version here*/
+        see = "",
+        mapper = @BEMapper(),
+        description = "Get all Queue attributes" /*Add Description here*/,
+        cautions = "none",
+        fndomain = {ACTION, BUI},
+        example = "Object map = SQS.getQueueAttributes(null,\"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
+    )
+    public static Object getQueueAttributes(String endpoint, String queueURL, String regionName) throws RuntimeException {
+
+        try {
+            AmazonSQS client = createAmazonSQSClient(endpoint, regionName);
+            return getQueueAttributesWithAccessKeySecret(client, queueURL);
+
+        } catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+
+    }
+
+    @BEFunction(
+            name = "getQueueAttributesWithAccessKeySecret",
+            signature = "Object getQueueAttributesWithAccessKeySecret(String endpoint, String queueName, String regionName, String awsAccessKey, String awsSecretKey)",
             params = {
                 @FunctionParamDescriptor(name = "endpoint", type = "String", desc = "AWS SQS Service endpoint, set to null to use default SQS Service address" /*Add Description here*/),
                 @FunctionParamDescriptor(name = "queueURL", type = "String", desc = "SQS Queue URL" /*Add Description here*/),
@@ -46,13 +78,13 @@ public class Queue {
             description = "Get all Queue attributes" /*Add Description here*/,
             cautions = "none",
             fndomain = {ACTION, BUI},
-            example = "Object map = SQS.getQueueAttributes(null,\"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
+            example = "Object map = SQS.getQueueAttributesWithAccessKeySecret(null,\"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
     )
-    public static Object getQueueAttributes(String endpoint, String queueURL, String regionName, String awsAccessKey, String awsSecretKey) throws RuntimeException {
+    public static Object getQueueAttributesWithAccessKeySecret(String endpoint, String queueURL, String regionName, String awsAccessKey, String awsSecretKey) throws RuntimeException {
 
         try {
             AmazonSQS client = createAmazonSQSClient(endpoint, regionName, awsAccessKey, awsSecretKey);
-            return getQueueAttributes(client, queueURL);
+            return getQueueAttributesWithAccessKeySecret(client, queueURL);
 
         } catch(Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -87,7 +119,7 @@ public class Queue {
 
         try {
             AmazonSQS client = createAmazonSQSClient(endpoint, regionName, roleARN, roleSessionName, duration, awsAccessKey, awsSecretKey);
-            return getQueueAttributes(client, queueURL);
+            return getQueueAttributesWithAccessKeySecret(client, queueURL);
 
         } catch(Exception e) {
            throw new RuntimeException(e.getMessage());
@@ -122,7 +154,7 @@ public class Queue {
 
         try {
             AmazonSQS client = createAmazonSQSClient(endpoint, regionName, idpName, idpEntryUrl, idpUsername, idpPassword, awsRole, duration);
-            return getQueueAttributes(client, queueURL);
+            return getQueueAttributesWithAccessKeySecret(client, queueURL);
 
         } catch(Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -132,7 +164,37 @@ public class Queue {
 
     @BEFunction(
         name = "getQueueAttribute",
-        signature = "String getQueueAttribute (String endpoint, String queueName, String attributeName, String regionName, String awsAccessKey, String awsSecretKey)",
+        signature = "String getQueueAttribute(String endpoint, String queueName, String attributeName, String regionName)",
+        params = {
+            @FunctionParamDescriptor(name = "endpoint", type = "String", desc = "AWS SQS Service endpoint, set to null to use default SQS Service address" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "queueURL", type = "String", desc = "SQS Queue URL" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "attributeName", type = "String", desc = "SQS Queue Attribute" /*Add Description here*/),
+            @FunctionParamDescriptor(name = "regionName", type = "String", desc = "AWS Region" /*Add Description here*/),
+        },
+        freturn = @FunctionParamDescriptor(name = "", type = "String", desc = "" /*Add Description here*/),
+        version = "1.0", /*Add Version here*/
+        see = "",
+        mapper = @BEMapper(),
+        description = "Get a Queue attribute" /*Add Description here*/,
+        cautions = "none",
+        fndomain = {ACTION, BUI},
+        example = "String attribute = SQS.getQueueAttribute(null,\"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
+    )
+    public static String getQueueAttribute(String endpoint, String queueURL, String attributeName, String regionName) throws RuntimeException {
+
+        try {
+            AmazonSQS client = createAmazonSQSClient(endpoint, regionName);
+            return getQueueAttributeWithAccessKeySecret(client, queueURL, attributeName);
+
+        } catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
+    @BEFunction(
+        name = "getQueueAttributeWithAccessKeySecret",
+        signature = "String getQueueAttributeWithAccessKeySecret(String endpoint, String queueName, String attributeName, String regionName, String awsAccessKey, String awsSecretKey)",
         params = {
             @FunctionParamDescriptor(name = "endpoint", type = "String", desc = "AWS SQS Service endpoint, set to null to use default SQS Service address" /*Add Description here*/),
             @FunctionParamDescriptor(name = "queueURL", type = "String", desc = "SQS Queue URL" /*Add Description here*/),
@@ -148,13 +210,13 @@ public class Queue {
         description = "Get a Queue attribute" /*Add Description here*/,
         cautions = "none",
         fndomain = {ACTION, BUI},
-        example = "String attribute = SQS.getQueueAttribute(null,\"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
+        example = "String attribute = SQS.getQueueAttributeWithAccessKeySecret(null,\"https://sqs.eu-west-1.amazonaws.com/01234567890123/test-queue\", \"...\", \"...\");\r\n"
     )
-    public static String getQueueAttribute(String endpoint, String queueURL, String attributeName, String regionName, String awsAccessKey, String awsSecretKey) throws RuntimeException {
+    public static String getQueueAttributeWithAccessKeySecret(String endpoint, String queueURL, String attributeName, String regionName, String awsAccessKey, String awsSecretKey) throws RuntimeException {
 
         try {
             AmazonSQS client = createAmazonSQSClient(endpoint, regionName, awsAccessKey, awsSecretKey);
-            return getQueueAttribute(client, queueURL, attributeName);
+            return getQueueAttributeWithAccessKeySecret(client, queueURL, attributeName);
 
         } catch(Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -162,7 +224,6 @@ public class Queue {
 
 
     }
-
 
     @BEFunction(
         name = "getQueueAttributeWithRoleARN",
@@ -191,7 +252,7 @@ public class Queue {
 
         try {
             AmazonSQS client = createAmazonSQSClient(endpoint, regionName, roleARN, roleSessionName, duration, awsAccessKey, awsSecretKey);
-            return getQueueAttribute(client, queueURL, attributeName);
+            return getQueueAttributeWithAccessKeySecret(client, queueURL, attributeName);
 
         } catch(Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -227,7 +288,7 @@ public class Queue {
 
         try {
             AmazonSQS client = createAmazonSQSClient(endpoint, regionName, idpName, idpEntryUrl, idpUsername, idpPassword, awsRole, duration);
-            return getQueueAttribute(client, queueURL, attributeName);
+            return getQueueAttributeWithAccessKeySecret(client, queueURL, attributeName);
 
         } catch(Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -236,7 +297,7 @@ public class Queue {
     }
 
 
-    public static Map<String,String> getQueueAttributes(AmazonSQS client, String queueURL) throws Exception {
+    public static Map<String,String> getQueueAttributesWithAccessKeySecret(AmazonSQS client, String queueURL) throws Exception {
 
         try {
             GetQueueAttributesRequest getQueueAttributesRequest = new GetQueueAttributesRequest()
@@ -251,7 +312,7 @@ public class Queue {
         }
     }
 
-    public static String getQueueAttribute(AmazonSQS client, String queueURL, String attributeName) throws Exception {
+    public static String getQueueAttributeWithAccessKeySecret(AmazonSQS client, String queueURL, String attributeName) throws Exception {
 
         try {
             GetQueueAttributesRequest getQueueAttributesRequest = new GetQueueAttributesRequest()
@@ -265,6 +326,37 @@ public class Queue {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+
+    public static AmazonSQS createAmazonSQSClient(String endpoint, String regionName) throws Exception {
+
+
+        if (endpoint != null && endpoint.length() != 0) {
+
+            AwsClientBuilder.EndpointConfiguration endpointConfiguration
+                = new AwsClientBuilder.EndpointConfiguration(endpoint, regionName);
+
+            AmazonSQS client = AmazonSQSClientBuilder
+                .standard()
+                .withCredentials(new DefaultAWSCredentialsProviderChain())
+                .withEndpointConfiguration(endpointConfiguration)
+                .build();
+
+            return client;
+
+        } else {
+
+            AmazonSQS client = AmazonSQSClientBuilder
+                .standard()
+                .withCredentials(new DefaultAWSCredentialsProviderChain())
+                .withRegion(regionName)
+                .build();
+
+            return client;
+        }
+
+    }
+
 
     public static AmazonSQS createAmazonSQSClient(String endpoint, String regionName, String roleARN, String roleSessionName, int duration, String awsAccessKey, String awsSecretKey) throws Exception {
 

@@ -10,6 +10,7 @@ A set of catalog functions supporting:
 
 The catalog functions support the following authentication modes:
 
+* Default Credential Chain
 * API and Secret Key
 * Assume Role using API and Secret Key
 * SAML Authentication using ADFS as the IdP
@@ -1039,21 +1040,49 @@ The SQS catalog functions allow you to interact with SQS Queues:
 
 
 * Get Queue Attributes
-    * [SQS.getQueueAttributes](#sqsgetqueueattributes)
-    * [SQS.getQueueAttributesWithRoleARN](#sqsgetqueueattributeswithrolearn)
-    * [SQS.getQueueAttributesWithSAML](#sqsgetqueueattributeswithsaml)
-    * [SQS.getQueueAttribute](#sqsgetqueueattribute)
-    * [SQS.getQueueAttributeWithRoleARN](#sqsgetqueueattributewithrolearn)
-    * [SQS.getQueueAttributeWithSAML](#sqsgetqueueattributewithsaml)
-  * 
+  * [SQS.getQueueAttributes](#sqsgetqueueattributes)
+  * [SQS.getQueueAttributesWithAccessKeySecret](#sqsgetqueueattributeswithaccesskeysecret)
+  * [SQS.getQueueAttributesWithRoleARN](#sqsgetqueueattributeswithrolearn)
+  * [SQS.getQueueAttributesWithSAML](#sqsgetqueueattributeswithsaml)
+  * [SQS.getQueueAttribute](#sqsgetqueueattribute)
+  * [SQS.getQueueAttributeWithAccessKeySecret](#sqsgetqueueattributewithaccesskeyscret)
+  * [SQS.getQueueAttributeWithRoleARN](#sqsgetqueueattributewithrolearn)
+  * [SQS.getQueueAttributeWithSAML](#sqsgetqueueattributewithsaml)
+
 ### SQS.getQueueAttributes
+
+Purpose: Get SQS Queue attributes using default credentials.
+
+Function Signature:
+
+```java
+Object getQueueAttributes(String endpoint, String queueURL, String regionName)
+```
+
+Args:
+
+| Arguments    | Purpose                                                                    |
+|:-------------|:---------------------------------------------------------------------------|
+| endpoint     | Override SQS Service endpoint, set to null to use the default SQS endpoint |
+| queueURL     | SQS Queue URL                                                              |
+| regionName   | AWS region e.g. "eu-west-1"                                                |
+
+Returns:
+
+| Type   | Description                                                            |
+|:-------|:-----------------------------------------------------------------------|
+| Object | Returns a Map<String,String> containing all known SQS Queue attributes |
+
+
+
+### SQS.getQueueAttributesWithAccessKeySecret
 
 Purpose: Get SQS Queue attributes using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-Object getQueueAttributes(String endpoint, String queueURL, String regionName, String awsAccessKey, String awsSecretKey)
+Object getQueueAttributesWithAccessKeySecret(String endpoint, String queueURL, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:
@@ -1071,6 +1100,7 @@ Returns:
 | Type   | Description                                                            |
 |:-------|:-----------------------------------------------------------------------|
 | Object | Returns a Map<String,String> containing all known SQS Queue attributes |
+
 
 ### SQS.getQueueAttributesWithRoleARN
 
@@ -1134,12 +1164,39 @@ Returns:
 
 ### SQS.getQueueAttribute
 
+Purpose: Get a SQS Queue attribute using default credentials.
+
+Function Signature:
+
+```java
+String getQueueAttribute(String endpoint, String queueURL, String attributeName, String regionName)
+```
+
+Args:
+
+| Arguments    | Purpose                                                                    |
+|:-------------|:---------------------------------------------------------------------------|
+| endpoint     | Override SQS Service endpoint, set to null to use the default SQS endpoint |
+| queueURL     | SQS Queue URL                                                              |
+| attributeName | SQS Queue attribute to get |
+| regionName   | AWS region e.g. "eu-west-1"                                                |
+
+Returns:
+
+| Type   | Description                                                                     |
+|:-------|:--------------------------------------------------------------------------------|
+| String | Returns value of SQS Queue attributes as named by String attributeName argument |
+
+
+
+### SQS.getQueueAttributeWithAccessKeySecret
+
 Purpose: Get a SQS Queue attribute using API Key and Secret authentication mode.
 
 Function Signature:
 
 ```java
-String getQueueAttribute(String endpoint, String queueURL, String attributeName, String regionName, String awsAccessKey, String awsSecretKey)
+String getQueueAttributeWithAccessKeySecret(String endpoint, String queueURL, String attributeName, String regionName, String awsAccessKey, String awsSecretKey)
 ```
 
 Args:

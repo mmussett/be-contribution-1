@@ -98,7 +98,17 @@ public class QueueIntegrationTest {
     @Test
     public void testGetQueueAttributes() throws Exception {
 
-        Map attributes = (Map<String,String>) getQueueAttributes(endpoint, queueURLBasic, regionName, awsAccessKeyBasic,
+        Map attributes = (Map<String,String>) getQueueAttributes(endpoint, queueURLBasic, regionName);
+
+        Assert.assertNotNull(attributes);
+        Assert.assertFalse(attributes.isEmpty());
+    }
+
+
+    @Test
+    public void testGetQueueAttributesWithAccessKeySecret() throws Exception {
+
+        Map attributes = (Map<String,String>) getQueueAttributesWithAccessKeySecret(endpoint, queueURLBasic, regionName, awsAccessKeyBasic,
             awsSecretKeyBasic);
 
         Assert.assertNotNull(attributes);
@@ -132,7 +142,16 @@ public class QueueIntegrationTest {
     @Test
     public void testGetQueueAttribute() throws Exception {
 
-        String attribute = getQueueAttribute(endpoint, queueURLBasic, "ApproximateNumberOfMessages", regionName, awsAccessKeyBasic,
+        String attribute = getQueueAttribute(endpoint, queueURLBasic, "ApproximateNumberOfMessages", regionName);
+
+        Assert.assertNotNull(attribute);
+        Assert.assertFalse(attribute.isEmpty());
+    }
+
+    @Test
+    public void testGetQueueAttributeWithAccessKeySecret() throws Exception {
+
+        String attribute = getQueueAttributeWithAccessKeySecret(endpoint, queueURLBasic, "ApproximateNumberOfMessages", regionName, awsAccessKeyBasic,
             awsSecretKeyBasic);
 
         Assert.assertNotNull(attribute);

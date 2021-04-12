@@ -1,26 +1,15 @@
 package com.tibco.be.custom.aws.services.sqs;
 
-import static com.tibco.be.custom.aws.services.sqs.Queue.getQueueAttributes;
-import static com.tibco.be.custom.aws.services.sqs.Queue.getQueueAttributesWithRoleARN;
-import static com.tibco.be.custom.aws.services.sqs.Queue.getQueueAttributesWithSAML;
+import static com.tibco.be.custom.aws.services.sqs.Queue.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.CreateQueueResult;
-import com.amazonaws.services.sqs.model.DeleteQueueResult;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
-import java.util.Properties;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -71,7 +60,7 @@ public class QueueUnitTest {
 
 
     @Test
-    @Order(0)
+    @Order(1)
     public void testGetQueueAttributes() throws Exception {
 
 
@@ -92,11 +81,94 @@ public class QueueUnitTest {
 
         String queueURL = queue.getQueueUrl();
 
-
         client.sendMessage(queueURL, "test message");
 
         Map<String, String> attributes =
             (Map<String,String>) getQueueAttributes(
+                localStackContainer.getEndpointOverride(Service.SQS).toASCIIString(),
+                queueURL,
+                localStackContainer.getRegion());
+
+        Assert.assertNotNull(attributes);
+        Assert.assertFalse(attributes.isEmpty());
+
+        int count = Integer.parseInt(attributes.get("ApproximateNumberOfMessages"));
+
+        Assert.assertEquals("Expecting ApproximateNumberOfMessages == 1", count, 1);
+
+        client.shutdown();
+
+    }
+
+    @Test
+    @Order(2)
+    public void testGetQueueAttribute() throws Exception {
+
+
+        String queueName = generateAlphaNumericRandomString(32);
+
+        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(localStackContainer.getAccessKey(), localStackContainer.getSecretKey());
+
+        AmazonSQS client = AmazonSQSClientBuilder
+            .standard()
+            .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
+            .withEndpointConfiguration(localStackContainer.getEndpointConfiguration(LocalStackContainer.Service.SQS))
+            .build();
+
+
+        CreateQueueResult queue = client
+            .createQueue(queueName);
+
+
+        String queueURL = queue.getQueueUrl();
+
+        client.sendMessage(queueURL, "test message");
+
+        String attribute =
+            getQueueAttribute(
+                localStackContainer.getEndpointOverride(Service.SQS).toASCIIString(),
+                queueURL,
+                "ApproximateNumberOfMessages",
+                localStackContainer.getRegion());
+
+        Assert.assertNotNull(attribute);
+        Assert.assertFalse(attribute.isEmpty());
+
+        int count = Integer.parseInt(attribute);
+
+        Assert.assertEquals("Expecting ApproximateNumberOfMessages == 1", count, 1);
+
+        client.shutdown();
+
+    }
+
+
+    @Test
+    @Order(3)
+    public void testGetQueueAttributesWithAccessKeySecret() throws Exception {
+
+
+        String queueName = generateAlphaNumericRandomString(32);
+
+        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(localStackContainer.getAccessKey(), localStackContainer.getSecretKey());
+
+        AmazonSQS client = AmazonSQSClientBuilder
+            .standard()
+            .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
+            .withEndpointConfiguration(localStackContainer.getEndpointConfiguration(LocalStackContainer.Service.SQS))
+            .build();
+
+
+        CreateQueueResult queue = client
+            .createQueue(queueName);
+
+
+        String queueURL = queue.getQueueUrl();
+
+        client.sendMessage(queueURL, "test message");
+
+        Map<String, String> attributes =
+            (Map<String,String>) getQueueAttributesWithAccessKeySecret(
                 localStackContainer.getEndpointOverride(Service.SQS).toASCIIString(),
                 queueURL,
                 localStackContainer.getRegion(),
@@ -112,9 +184,51 @@ public class QueueUnitTest {
 
         client.shutdown();
 
-
     }
 
+    @Test
+    @Order(4)
+    public void testGetQueueAttributeWithAccessKeySecret() throws Exception {
+
+
+        String queueName = generateAlphaNumericRandomString(32);
+
+        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(localStackContainer.getAccessKey(), localStackContainer.getSecretKey());
+
+        AmazonSQS client = AmazonSQSClientBuilder
+            .standard()
+            .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
+            .withEndpointConfiguration(localStackContainer.getEndpointConfiguration(LocalStackContainer.Service.SQS))
+            .build();
+
+
+        CreateQueueResult queue = client
+            .createQueue(queueName);
+
+
+        String queueURL = queue.getQueueUrl();
+
+        client.sendMessage(queueURL, "test message");
+
+        String attribute =
+            getQueueAttributeWithAccessKeySecret(
+                localStackContainer.getEndpointOverride(Service.SQS).toASCIIString(),
+                queueURL,
+                "ApproximateNumberOfMessages",
+                localStackContainer.getRegion(),
+                localStackContainer.getAccessKey(),
+                localStackContainer.getSecretKey());
+
+        Assert.assertNotNull(attribute);
+        Assert.assertFalse(attribute.isEmpty());
+
+        int count = Integer.parseInt(attribute);
+
+        Assert.assertEquals("Expecting ApproximateNumberOfMessages == 1", count, 1);
+
+        client.shutdown();
+
+    }
 
 
     // function to generate a random string of length n
